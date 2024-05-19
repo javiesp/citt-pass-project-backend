@@ -9,29 +9,25 @@ import { Model } from 'mongoose';
 export class ProjectTeamService {
   constructor(@InjectModel(ProjectTeam.name) private readonly projectTeamModel: Model<ProjectTeam>) {}
 
-  createProjectTeam(createProjectTeamDto: CreateProjectTeamDto) {
-    const createdUser = new this.projectTeamModel(createProjectTeamDto).save();
+  async createProjectTeam(createProjectTeamDto: CreateProjectTeamDto): Promise<ProjectTeam> {
+    const createdProjectTeam = new this.projectTeamModel(createProjectTeamDto).save();
     console.log(createProjectTeamDto)
-    return createdUser;
+    return createdProjectTeam;
   }
 
-  async findAllProjectTeam() {
+  async findAllProjectTeams() : Promise<ProjectTeam[]>{
     return await this.projectTeamModel.find().exec();
   }
 
-  async findProjectById(project_team_id: any) {
-    return await this.projectTeamModel.find({"project_team_id": project_team_id}).exec();
+  async findOneProjectTeam(id: string): Promise<ProjectTeam> {
+    return await this.projectTeamModel.findById(id).exec();
   }
 
-  async findOneProjectTeam(id: number) {
-    return await this.projectTeamModel.findById(id);
+  async updateProjectTeam(id: string, updateProjectTeamDto: UpdateProjectTeamDto): Promise<ProjectTeam> {
+    return await this.projectTeamModel.findByIdAndUpdate(id, updateProjectTeamDto, { new: true }).exec();
   }
 
-  async updateProjectTeam(id: number, updateProjectTeamDto: UpdateProjectTeamDto) {
-    return await this.projectTeamModel.findByIdAndUpdate(id, updateProjectTeamDto)
-  }
-
-  async removeProjectTeam(id: number) {
-    return await this.projectTeamModel.findByIdAndDelete(id)
+  async removeProjectTeam(id: string): Promise<ProjectTeam> {
+    return await this.projectTeamModel.findByIdAndDelete(id).exec();
   }
 }
